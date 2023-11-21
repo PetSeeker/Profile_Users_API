@@ -88,13 +88,6 @@ async def create_user(
             #insert_query = "INSERT INTO users_profile (username, email, gender, locality, first_name, last_name, description, interests) VALUES (%s,%s, %s, %s, %s, %s, %s, %s::jsonb)"
             #cursor.execute(insert_query, (username, email, gender, locality, first_name, last_name, description, []))
             
-            logger.info(image)
-            
-            if image:
-                logger.info(f"Uploading image: {image.filename}")
-                image_url = upload_image_to_s3(image)
-                insert_image_data(cursor, image.filename, image_url, str(user_id))
-            
             connection.commit()
 
             return {"message": "User Profile created successfully!"}
