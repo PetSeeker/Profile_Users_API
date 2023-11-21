@@ -84,7 +84,7 @@ async def create_user(
     global connection
     try:
         with connection.cursor() as cursor:     
-            user_id = insert_user_profile_data(cursor,username,email,gender,locality,first_name,last_name,description)  
+            insert_user_profile_data(cursor,username,email,gender,locality,first_name,last_name,description)  
             #insert_query = "INSERT INTO users_profile (username, email, gender, locality, first_name, last_name, description, interests) VALUES (%s,%s, %s, %s, %s, %s, %s, %s::jsonb)"
             #cursor.execute(insert_query, (username, email, gender, locality, first_name, last_name, description, []))
             
@@ -282,7 +282,6 @@ def create_tables():
 def insert_user_profile_data(cursor, username, email, gender, locality, first_name, last_name, description):
     insert_query = "INSERT INTO users_profile (username, email, gender, locality, first_name, last_name, description, interests) VALUES (%s,%s, %s, %s, %s, %s, %s, %s::jsonb)"
     cursor.execute(insert_query, (username, email, gender, locality, first_name, last_name, description, []))
-    return cursor.fetchone()[0]
 
 def upload_image_to_s3(image):
     random_string = str(uuid4())
