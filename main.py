@@ -83,10 +83,16 @@ async def create_user(
 ):
     global connection
     try:
-        with connection.cursor() as cursor:     
-            insert_user_profile_data(cursor,username,email,gender,locality,first_name,last_name,description)  
-            #insert_query = "INSERT INTO users_profile (username, email, gender, locality, first_name, last_name, description, interests) VALUES (%s,%s, %s, %s, %s, %s, %s, %s::jsonb)"
-            #cursor.execute(insert_query, (username, email, gender, locality, first_name, last_name, description, []))
+        with connection.cursor() as cursor:
+            
+            check_query = "SELECT * FROM users_profile WHERE email = %s"
+            cursor.execute(check_query, (email,))
+            existing_user = cursor.fetchone()
+            
+            if existing_user:
+                return HTTPException(status_code=400, detail="User already exists")
+                 
+            insert_user_profile_data(cursor,username,email,gender,locality,first_name,last_name,description)
             
             connection.commit()
 
