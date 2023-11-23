@@ -148,9 +148,19 @@ async def edit_user(
             )
             
             if image:
-                logger.info(f"Inserting image: {image}")
-                image_url = upload_image_to_s3(image)
-                insert_image_data(cursor, image.filename, image_url, str(existing_user[0]))
+                # Check if there are existing images for the user_id
+                select_images_query = "SELECT * FROM images WHERE user_profile_id = %s"
+                cursor.execute(select_images_query, (str(existing_user[0]),))
+                existing_images = cursor.fetchall()
+                
+                if existing_images:
+                    logger.info("Update existing image")
+                    image_url = upload_image_to_s3(image)
+                    update_image_data(cursor, image.filename, image_url, str(existing_user[0]))
+                else:
+                    logger.info(f"Inserting image: {image}")
+                    image_url = upload_image_to_s3(image)
+                    insert_image_data(cursor, image.filename, image_url, str(existing_user[0]))
 
             connection.commit()
 
@@ -299,6 +309,10 @@ def upload_image_to_s3(image):
 def insert_image_data(cursor, image_filename, image_url, user_id):
     insert_query = "INSERT INTO images (image_name, image_url, user_profile_id) VALUES (%s, %s, %s)"
     cursor.execute(insert_query, (image_filename, image_url, user_id))
+    
+def update_image_data(cursor, image_filename, image_url, user_id):
+    update_image_query = "UPDATE images SET image_name = %s, image_url = %s WHERE user_profile_id = %s"
+    cursor.execute(update_image_query, (image_filename, image_url, user_id))
     
 def get_images_for_users_profile(user_id, cursor):
     cursor.execute("SELECT image_url FROM images WHERE user_profile_id = %s", (user_id,))
