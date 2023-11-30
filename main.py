@@ -227,7 +227,7 @@ async def get_interests(interest: str):
    
    
 #Just for Debugging... 
-@app.get("/get-all-users")
+@app.get("/profile/all")
 async def get_all_users():
     global connection
     try:
