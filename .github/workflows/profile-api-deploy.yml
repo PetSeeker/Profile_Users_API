@@ -7,7 +7,7 @@ on:
       - main
       
 env:
-  ECR_REGISTRY_ALIAS: l0z7y8f5
+  ECR_REGISTRY_ALIAS: l6y6f3c9
   ECR_REPOSITORY: profile-man-repo
   AWS_REGION: eu-north-1                                             # set this to your preferred AWS region, e.g. us-west-1
   #ECS_SERVICE: profileservice                               # set this to your Amazon ECS service name
