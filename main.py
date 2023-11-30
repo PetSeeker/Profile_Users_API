@@ -70,11 +70,12 @@ async def health():
     return HTTPException(status_code=200, detail="Server is healthy")
 
 
-@app.post("/create-user-profile/")
+#Create users profile
+@app.post("/profile/")
 async def create_user(
     username: str = Form(...),
     email: str = Form(...),
-    gender: str = Form(...),
+    gender: str = Form(None),
     locality: str = Form(None),
     first_name: str = Form(None),
     last_name: str = Form(None),
@@ -103,7 +104,8 @@ async def create_user(
         logger.error(f"Error adding listing: {e}")
         return HTTPException(status_code=500, detail="Internal Server Error")
 
-@app.put("/edit-user-profile/{email}")
+#Edit user's profile
+@app.put("/profile/{email}")
 async def edit_user(
     email: str,
     locality: str = Form(None),
@@ -171,8 +173,8 @@ async def edit_user(
         logger.error(f"Error updating user: {e}")
         return HTTPException(status_code=500, detail="Internal Server Error")
     
-
-@app.get("/get-user/{email}")
+#Get user's profile given an email
+@app.get("/profile/{email}")
 async def get_user(email: str):
     global connection
     try:
@@ -204,8 +206,9 @@ async def get_user(email: str):
     except Exception as e:
         logger.error(f"Error retrieving user: {e}")
         return HTTPException(status_code=500, detail="Internal Server Error")
-    
-@app.get("/get-interests/{interest}")
+
+#Get user's with the given interest    
+@app.get("/profile/users/{interest}")
 async def get_interests(interest: str):
     global connection
     try:
