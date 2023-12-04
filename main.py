@@ -108,6 +108,7 @@ async def create_user(
 @app.put("/profile/{email}")
 async def edit_user(
     email: str,
+    gender: str = Form(None),
     locality: str = Form(None),
     first_name: str = Form(None),
     last_name: str = Form(None),
@@ -136,7 +137,8 @@ async def edit_user(
             
             update_query = """
                 UPDATE users_profile 
-                SET locality = %s,
+                SET gender = %s,
+                    locality = %s,
                     first_name = %s,
                     last_name = %s,
                     description = %s,
@@ -146,7 +148,7 @@ async def edit_user(
             
             cursor.execute(
                 update_query,
-                (locality, first_name, last_name, description, json.dumps(interests_list), email),
+                (gender, locality, first_name, last_name, description, json.dumps(interests_list), email),
             )
             
             if image:
@@ -227,7 +229,7 @@ async def get_interests(interest: str):
    
    
 #Just for Debugging... 
-@app.get("/profile/all")
+@app.get("/profile/all/")
 async def get_all_users():
     global connection
     try:
@@ -269,7 +271,7 @@ def create_tables():
                 user_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
                 username VARCHAR NOT NULL,
                 email VARCHAR NOT NULL UNIQUE,
-                gender VARCHAR NOT NULL,
+                gender VARCHAR,
                 locality VARCHAR,
                 first_name VARCHAR,
                 last_name VARCHAR,
