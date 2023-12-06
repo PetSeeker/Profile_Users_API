@@ -75,7 +75,6 @@ async def health():
 async def create_user(
     username: str = Form(...),
     email: str = Form(...),
-    gender: str = Form(None),
     locality: str = Form(None),
     first_name: str = Form(None),
     last_name: str = Form(None),
@@ -93,7 +92,7 @@ async def create_user(
             if existing_user:
                 return HTTPException(status_code=400, detail="User already exists")
                  
-            insert_user_profile_data(cursor,username,email,gender,locality,first_name,last_name,description)
+            insert_user_profile_data(cursor,username,email,locality,first_name,last_name,description)
             
             connection.commit()
 
@@ -108,7 +107,6 @@ async def create_user(
 @app.put("/profile/{email}")
 async def edit_user(
     email: str,
-    gender: str = Form(None),
     locality: str = Form(None),
     first_name: str = Form(None),
     last_name: str = Form(None),
@@ -137,8 +135,7 @@ async def edit_user(
             
             update_query = """
                 UPDATE users_profile 
-                SET gender = %s,
-                    locality = %s,
+                SET locality = %s,
                     first_name = %s,
                     last_name = %s,
                     description = %s,
@@ -148,7 +145,7 @@ async def edit_user(
             
             cursor.execute(
                 update_query,
-                (gender, locality, first_name, last_name, description, json.dumps(interests_list), email),
+                (locality, first_name, last_name, description, json.dumps(interests_list), email),
             )
             
             if image:
@@ -194,12 +191,11 @@ async def get_user(email: str):
                 "user_id": user[0],
                 "username": user[1],
                 "email": user[2],
-                "gender": user[3],
-                "locality": user[4],
-                "first_name": user[5],
-                "last_name": user[6],
-                "description": user[7],
-                "interests": user[8],
+                "locality": user[3],
+                "first_name": user[4],
+                "last_name": user[5],
+                "description": user[6],
+                "interests": user[7],
                 "image": image
             }
 
@@ -243,12 +239,11 @@ async def get_all_users():
                     "user_id": user[0],
                     "username": user[1],
                     "email": user[2],
-                    "gender": user[3],
-                    "locality": user[4],
-                    "first_name": user[5],
-                    "last_name": user[6],
-                    "description": user[7],
-                    "interests": user[8],
+                    "locality": user[3],
+                    "first_name": user[4],
+                    "last_name": user[5],
+                    "description": user[6],
+                    "interests": user[7],
                 }
                 for user in all_users
             ]
@@ -271,7 +266,6 @@ def create_tables():
                 user_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
                 username VARCHAR NOT NULL,
                 email VARCHAR NOT NULL UNIQUE,
-                gender VARCHAR,
                 locality VARCHAR,
                 first_name VARCHAR,
                 last_name VARCHAR,
@@ -300,9 +294,9 @@ def create_tables():
         logger.error(f"Error creating table: {error}")
 
 
-def insert_user_profile_data(cursor, username, email, gender, locality, first_name, last_name, description):
-    insert_query = "INSERT INTO users_profile (username, email, gender, locality, first_name, last_name, description, interests) VALUES (%s,%s, %s, %s, %s, %s, %s, %s::jsonb)"
-    cursor.execute(insert_query, (username, email, gender, locality, first_name, last_name, description, []))
+def insert_user_profile_data(cursor, username, email, locality, first_name, last_name, description):
+    insert_query = "INSERT INTO users_profile (username, email, locality, first_name, last_name, description, interests) VALUES (%s,%s, %s, %s, %s, %s, %s, %s::jsonb)"
+    cursor.execute(insert_query, (username, email, locality, first_name, last_name, description, []))
 
 def upload_image_to_s3(image):
     random_string = str(uuid4())
