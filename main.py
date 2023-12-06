@@ -256,19 +256,19 @@ async def get_all_users():
 
 
 #Just for Debugging...
-@app.delete("/deleteGender/")
-async def remove_gender():
-    global connection
-    try:
-        with connection.cursor() as cursor:
-            remove_query = "ALTER TABLE users_profile DROP COLUMN IF EXISTS gender;"
-            cursor.execute(remove_query)
-            connection.commit()
-            return {"message": "Column 'gender' removed successfully from users_profile table"}
+# @app.delete("/deleteGender/")
+# async def remove_gender():
+#     global connection
+#     try:
+#         with connection.cursor() as cursor:
+#             remove_query = "ALTER TABLE users_profile DROP COLUMN IF EXISTS gender;"
+#             cursor.execute(remove_query)
+#             connection.commit()
+#             return {"message": "Column 'gender' removed successfully from users_profile table"}
             
-    except Exception as e:
-        logger.error(f"Error retrieving all users: {e}")
-        return HTTPException(status_code=500, detail="Internal Server Error") 
+#     except Exception as e:
+#         logger.error(f"Error retrieving all users: {e}")
+#         return HTTPException(status_code=500, detail="Internal Server Error") 
 
 def create_tables():
     try:
