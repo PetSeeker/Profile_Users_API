@@ -78,8 +78,7 @@ async def create_user(
     locality: str = Form(None),
     first_name: str = Form(None),
     last_name: str = Form(None),
-    description: str = Form(None),
-    image: UploadFile = Form(None)
+    description: str = Form(None)
 ):
     global connection
     try:
@@ -100,7 +99,7 @@ async def create_user(
     
     except Exception as e:
         connection.rollback()
-        logger.error(f"Error adding listing: {e}")
+        logger.error(f"Error adding profile: {e}")
         return HTTPException(status_code=500, detail="Internal Server Error")
 
 #Edit user's profile
@@ -309,7 +308,7 @@ def create_tables():
 
 
 def insert_user_profile_data(cursor, username, email, locality, first_name, last_name, description):
-    insert_query = "INSERT INTO users_profile (username, email, locality, first_name, last_name, description, interests) VALUES (%s,%s, %s, %s, %s, %s, %s, %s::jsonb)"
+    insert_query = "INSERT INTO users_profile (username, email, locality, first_name, last_name, description, interests) VALUES (%s, %s, %s, %s, %s, %s, %s::jsonb)"
     cursor.execute(insert_query, (username, email, locality, first_name, last_name, description, []))
 
 def upload_image_to_s3(image):
