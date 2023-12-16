@@ -206,7 +206,7 @@ async def get_user(email: str):
 
 #Get user's with the given interest    
 @app.get("/profile/users/{interest}")
-async def get_interests(interest: str):
+async def get_users_by_interest(interest: str):
     global connection
     try:
         with connection.cursor() as cursor:
@@ -224,34 +224,34 @@ async def get_interests(interest: str):
    
    
 #Just for Debugging... 
-@app.get("/profile/all/")
-async def get_all_users():
-    global connection
-    try:
-        with connection.cursor() as cursor:
-            select_all_query = "SELECT * FROM users_profile"
-            cursor.execute(select_all_query)
-            all_users = cursor.fetchall()
+# @app.get("/profile/all/")
+# async def get_all_users():
+#     global connection
+#     try:
+#         with connection.cursor() as cursor:
+#             select_all_query = "SELECT * FROM users_profile"
+#             cursor.execute(select_all_query)
+#             all_users = cursor.fetchall()
 
-            user_list = [
-                {
-                    "user_id": user[0],
-                    "username": user[1],
-                    "email": user[2],
-                    "locality": user[3],
-                    "first_name": user[4],
-                    "last_name": user[5],
-                    "description": user[6],
-                    "interests": user[7],
-                }
-                for user in all_users
-            ]
+#             user_list = [
+#                 {
+#                     "user_id": user[0],
+#                     "username": user[1],
+#                     "email": user[2],
+#                     "locality": user[3],
+#                     "first_name": user[4],
+#                     "last_name": user[5],
+#                     "description": user[6],
+#                     "interests": user[7],
+#                 }
+#                 for user in all_users
+#             ]
 
-            return user_list
+#             return user_list
 
-    except Exception as e:
-        logger.error(f"Error retrieving all users: {e}")
-        return HTTPException(status_code=500, detail="Internal Server Error")    
+#     except Exception as e:
+#         logger.error(f"Error retrieving all users: {e}")
+#         return HTTPException(status_code=500, detail="Internal Server Error")    
 
 
 #Just for Debugging...
