@@ -23,8 +23,7 @@ ACCESS_KEY = os.getenv("ACCESS_KEY")
 SECRET_KEY = os.getenv("SECRET_KEY")
 REGION = os.getenv("REGION")
 
-s3 = boto3.resource('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY, region_name=REGION)
-bucket = s3.Bucket(AWS_BUCKET)
+s3 = boto3.client('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY, region_name=REGION)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -316,7 +315,7 @@ def upload_image_to_s3(image):
     random_string = str(uuid4())
     unique_filename = f"{random_string}_{image.filename}"
     image_url = f"https://{AWS_BUCKET}.s3.amazonaws.com/{unique_filename}"
-    bucket.upload_fileobj(image.file, unique_filename, ExtraArgs={"ACL": "public-read"})
+    s3.upload_fileobj(image.file, AWS_BUCKET, unique_filename, ExtraArgs={"ACL": "public-read", "ContentType": image.content_type})
     return image_url
 
 def insert_image_data(cursor, image_filename, image_url, user_id):
